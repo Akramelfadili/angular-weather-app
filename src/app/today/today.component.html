@@ -1,0 +1,54 @@
+<div class="row">
+     <div class="col-md-6 offset-md-3">
+          <div class="input-group mt-5 mb-5">
+               <input #userInput type="text" class="form-control" placeholder="Enter de City Name">
+               <div class="input-group-append">
+                    <button class="input-group btn btn-outline-primary" (click)="getCity(userInput.value)">
+                         Search Weather
+                    </button>
+               </div>
+          </div>
+
+          <div class="col-sm-12 text-center mb-5">
+               <h2>Weather in {{ weather.name }}, {{ weather.sys.country }}</h2>
+          </div>
+
+          <div class="col-sm-12">
+               <span class="temp">
+                   <strong>Temperature</strong> : {{ weather.main.temp | number : '1.0-0' }} &#176;F
+                </span>
+                <p class=" font-italic font-weight-bold">
+                    <strong>Description</strong> : {{ weather.weather[0].description }}
+                </p>
+          </div>
+
+          <table class="table table-light table-stripped table-bordered table-sm">
+               <tbody>
+                    <tr>
+                         <td>Humidity</td>
+                         <td>{{ weather.main.humidity }}</td>
+                    </tr>
+                    <tr>
+                         <td>Pressure</td>
+                         <td>{{ weather.main.pressure }}</td>
+                    </tr>
+                    <tr>
+                         <td>Sunrise</td>
+                         <td>{{ weather.sys.sunrise*1000 | date:'H:mm' }}</td>
+                    </tr>
+                    <tr>
+                         <td>Sunset</td>
+                         <td>{{ weather.sys.sunset*1000 | date:'H:mm' }}</td>
+                    </tr>
+                    <tr>
+                         <td>Geo Cords</td>
+                         <td>[Latitude : {{ weather.coord.lat }}, Longitude : {{ weather.coord.lon }}]</td>
+                    </tr>
+               </tbody>
+          </table>
+
+
+          <div class="full" id="map">
+          </div>
+     </div>
+</div>
