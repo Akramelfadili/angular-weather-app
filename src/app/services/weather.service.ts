@@ -24,4 +24,9 @@ export class WeatherService {
       .set("q",city).set("units","imperial").set("appId",this.APIKey);
     return this.http.get(this.link, {params});
   }
+/* 
+  getWeatherDataOnMapClick(lat : number,lon :any){
+    let params = new HttpParams()
+        .set("lat",lat).set("lon",lon).set("units","imperial").set("appId",this.APIKey);
+  } */
 }

@@ -21,32 +21,12 @@ export class TodayComponent implements OnInit {
   constructor(private weatherservice : WeatherService) { }
 
   ngOnInit(): void {
-    this.getLocation();
-
-    let loader = new Loader({
-      apiKey: 'AIzaSyBIgOWEB_l-fafJuIYqbbeEFiVyyBQFuqM'
-    });
-
-    loader.load().then(() =>{
-       const map = new google.maps.Map(document.getElementById("map")!, {
-        center : {lat :this.lat , lng : this.lon},
-        zoom : 9,
-      });
-      new google.maps.Marker({
-        position : {lat :this.lat , lng : this.lon},
-        map,
-        title : "Hello World"
-      })
-
-      map.addListener("click",(mapsMouseEvent :any) =>{
-        this.positionMap = mapsMouseEvent.latLng;
-        console.log(this.positionMap);
-      })  
-    });
+    this.getLocation(); 
+    this.getMap();
   }
 
   getLocation(){
-    if( "geolocation" in navigator) {
+    if("geolocation" in navigator) {
       navigator.geolocation.watchPosition( (position) => {
         this.lat = position.coords.latitude;
         this.lon = position.coords.longitude;
@@ -57,30 +37,46 @@ export class TodayComponent implements OnInit {
             });
       });
     }else {
-      console.log("No location");
+      alert("Can't find your location. Sorry !!");
     }
   }
 
-  getCity(city : string){
-    this.weatherservice.getWeatherByCity(city).subscribe( (data :any) => {
-      this.weather = data;
-      this.lat = data.coord.lat;
-      this.lon = data.coord.lon; 
+  getMap(){
+    let loader = new Loader({
+      apiKey: 'AIzaSyBIgOWEB_l-fafJuIYqbbeEFiVyyBQFuqM'
+    });
 
-      this.loader.load().then(() =>{
-        const map = new google.maps.Map(document.getElementById("map")!, {
-          center : {lat :this.lat , lng : this.lon},
-          zoom : 9,
-        });
+    loader.load().then(() =>{
+       const map = new google.maps.Map(document.getElementById("map")!, {
+        center : {lat :this.lat , lng : this.lon},
+        zoom : 9,
+      });
         new google.maps.Marker({
-          position : {lat :this.lat , lng : this.lon},
-          map,
-          title : "Hello World"
-        })
-        
-      })
+        position : {lat :this.lat , lng : this.lon},
+        map :map
+      }); 
 
+      map.addListener("click", (mapsMouseEvent: any) =>{
+       let latitude = mapsMouseEvent.latLng.toJSON().lat; 
+        let longitude = mapsMouseEvent.latLng.toJSON().lng;
+       this.weatherservice.getWeatherDataByCoords(latitude,longitude)
+        .subscribe( data => {
+          this.weather = data;
+      });
+});
     });
   }
+
+  getCity(city : string){
+    this.weatherservice.getWeatherByCity(city)
+      .subscribe( (data :any) => {
+        this.weather = data;
+        this.lat = data.coord.lat;
+        this.lon = data.coord.lon;
+        this.getMap();
+    });
+  }
+
+  
 
 }
